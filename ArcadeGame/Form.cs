@@ -7,30 +7,6 @@ using System.Windows.Forms;
 /// </summary>
 public partial class Form : System.Windows.Forms.Form
 {
-    private const int DefoultScreenWidth = 640;   
-    private const int DefoultScreenHeight = 480;
-    private const int TimerIntervalMc = 20; // 50 кадров в секунду
-
-    private const int DrawingBordersX = 20;
-    private const int DrawingBordersY = 40;
-    private const int BordersWidth = 5;
-    
-    private const int UISidebarPadding = 40;
-    private const string GameFontFamily = "Segoe UI";
-    private const float TitleFontSize = 18f;
-    private const float StatusFontSize = 20f;
-
-    private const int DistanceYName = 50;
-
-    private const int NumberOfLives = 3;
-    private const int WidthOfCirclesOfLives = 2;
-    private const int DistanceOfLives = 110;
-    private const int DistanceBetweenLives = 40;
-    private const int LifeCircleDiameter = 25;
-    
-    private const int DistanceToGameSituation = 260;
-    private const int StandardPlatformWidth = 100;
-    
     private GameEngine _engine;
     private System.Windows.Forms.Timer _timer;
     /// <summary>
@@ -39,12 +15,12 @@ public partial class Form : System.Windows.Forms.Form
     public Form()
     {
         InitializeComponent();
-        _engine = new GameEngine( DefoultScreenWidth, DefoultScreenHeight );
+        _engine = new GameEngine( Constants.DefoultScreenWidth, Constants.DefoultScreenHeight );
         BackgroundImage = ArcadeGame.Resources.background;
         BackgroundImageLayout = ImageLayout.Stretch;
         
         _timer = new System.Windows.Forms.Timer();
-        _timer.Interval = TimerIntervalMc; 
+        _timer.Interval = Constants.TimerIntervalMc; 
         _timer.Tick += TimerTick; 
         _timer.Start();
         MouseMove += (sender, e) => _engine.MovePaddle(e.X);
@@ -66,7 +42,7 @@ public partial class Form : System.Windows.Forms.Form
     private void RenderScene(Graphics g)
     {
         if (BackgroundImage != null) g.DrawImage(BackgroundImage, ClientRectangle);
-        using (Pen wallPen = new Pen(Color.LemonChiffon, BordersWidth)) g.DrawRectangle(wallPen, DrawingBordersX, DrawingBordersY, _engine.GameWidth, _engine.GameHeight);
+        using (Pen wallPen = new Pen(Color.LemonChiffon, Constants.BordersWidth)) g.DrawRectangle(wallPen, Constants.DrawingBordersX, Constants.DrawingBordersY, _engine.GameWidth, _engine.GameHeight);
         foreach (var block in _engine.Blocks)
         {
             Brush brush;
@@ -84,21 +60,21 @@ public partial class Form : System.Windows.Forms.Form
         g.FillRectangle(Brushes.Black, _engine.PaddleX, _engine.PaddleY, _engine.PaddleWidth, _engine.PaddleHeight);
         g.DrawRectangle(Pens.DimGray, _engine.PaddleX, _engine.PaddleY, _engine.PaddleWidth, _engine.PaddleHeight);
         
-        var heartsX = _engine.GameWidth + UISidebarPadding;
-        Font titleFont = new Font(GameFontFamily, TitleFontSize, FontStyle.Bold);
-        Font statusFont = new Font(GameFontFamily, StatusFontSize, FontStyle.Bold);
-        g.DrawString("Arcade game", titleFont, Brushes.White, heartsX, DistanceYName);
-        using (Pen redPen = new Pen(Color.Red, WidthOfCirclesOfLives))
+        var heartsX = _engine.GameWidth + Constants.UISidebarPadding;
+        Font titleFont = new Font(Constants.GameFontFamily, Constants.TitleFontSize, FontStyle.Bold);
+        Font statusFont = new Font(Constants.GameFontFamily, Constants.StatusFontSize, FontStyle.Bold);
+        g.DrawString("Arcade game", titleFont, Brushes.White, heartsX, Constants.DistanceYName);
+        using (Pen redPen = new Pen(Color.Red, Constants.WidthOfCirclesOfLives))
         {
-            for (var i = 0; i < NumberOfLives; i++)
+            for (var i = 0; i < Constants.NumberOfLives; i++)
             {
-                var yPos = DistanceOfLives + (i * DistanceBetweenLives);
-                g.DrawEllipse(redPen, heartsX, yPos, LifeCircleDiameter, LifeCircleDiameter);
-                if (i < _engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, LifeCircleDiameter, LifeCircleDiameter);
+                var yPos = Constants.DistanceOfLives + (i * Constants.DistanceBetweenLives);
+                g.DrawEllipse(redPen, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
+                if (i < _engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
             }
         }
-        if (_engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, DistanceToGameSituation);
-        if (_engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, DistanceToGameSituation);
+        if (_engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, Constants.DistanceToGameSituation);
+        if (_engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, Constants.DistanceToGameSituation);
         if (_engine.GameOver || _engine.GameWon) ButtonStartAgain.Visible = true;
         if (_engine.IsBonusActive)
         {
@@ -124,7 +100,7 @@ public partial class Form : System.Windows.Forms.Form
     
     private void ResetGame()
     {
-        _engine.Lives = NumberOfLives;
+        _engine.Lives = Constants.NumberOfLives;
         _engine.GameOver = false;
         _engine.GameWon = false;
         _engine.Score = 0;
@@ -132,7 +108,7 @@ public partial class Form : System.Windows.Forms.Form
         _engine.ResetBall();
         ButtonStartAgain.Visible = false;
         _engine.IsBonusActive = false;
-        _engine.PaddleWidth = StandardPlatformWidth;
+        _engine.PaddleWidth = Constants.StandardPlatformWidth;
     }
     
     private void ButtonStartAgain_Click(object sender, EventArgs e) => ResetGame();
