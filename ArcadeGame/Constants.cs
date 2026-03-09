@@ -1,5 +1,7 @@
 namespace ArcadeGame;
-
+/// <summary>
+/// Класс содержащий константы
+/// </summary>
 public static class Constants
 {
     public const int DefoultScreenWidth = 640;   
@@ -53,5 +55,4 @@ public static class Constants
     public const int BonusSpawnMinX = 30; 
     public const int BonusSpawnY = 40;
     public const int BonusEffectDuration = 400; 
-    
 }
