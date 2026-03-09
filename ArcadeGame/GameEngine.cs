@@ -1,0 +1,309 @@
+namespace ArcadeGame;
+using System;
+using System.Collections.Generic; 
+
+public class GameEngine
+{
+    /// <summary>
+    /// Текущее количество очков игрока.
+    /// </summary>
+    public int Score { get; set; } = 0;
+    /// <summary>
+    /// Максимально возможное количество очков за полное уничтожение всех блоков.
+    /// </summary>
+    public int MaxScore { get; private set; }
+    /// <summary>
+    /// Координата X центра мяча
+    /// </summary>
+    public float BallX { get; set; }
+    /// <summary>
+    /// Координата Y центра мяча.
+    /// </summary>
+    public float BallY { get; set; }
+    /// <summary>
+    /// Скорость мяча по оси X (горизонтальная).
+    /// </summary>
+    public float BallVX { get; set; }
+    /// <summary>
+    /// Скорость мяча по оси Y (вертикальная).
+    /// </summary>
+    public float BallVY { get; set; }
+    /// <summary>
+    /// Размер (диаметр) мяча.
+    /// </summary>
+    public int BallSize { get; } = 12; 
+    /// <summary>
+    /// Флаг, указывающий, запущена ли игра (мяч движется).
+    /// </summary>
+    public bool IsStarted { get; set; } 
+    /// <summary>
+    /// Координата X верхнего левого угла платформы.
+    /// </summary>
+    public float PaddleX { get; set; }
+    /// <summary>
+    /// Координата Y верхнего левого угла платформы.
+    /// </summary>
+    public float PaddleY { get; }
+    /// <summary>
+    /// Ширина платформы.
+    /// </summary>
+    public int PaddleWidth { get; set; } = 100;
+    /// <summary>
+    /// Высота платформы.
+    /// </summary>
+    public int PaddleHeight { get; } = 15;
+    /// <summary>
+    /// Ширина игрового поля (без отступов).
+    /// </summary>
+    public int GameWidth { get; }
+    /// <summary>
+    /// Высота игрового поля (без отступов).
+    /// </summary>
+    public int GameHeight { get; }
+    /// <summary>
+    /// Список всех блоков на игровом поле.
+    /// </summary>
+    public List<Block> Blocks { get; }
+    /// <summary>
+    /// Количество жизней игрока.
+    /// </summary>
+    public int Lives { get; set; } = 3;
+    /// <summary>
+    /// Флаг, указывающий, завершена ли игра (проигрыш).
+    /// </summary>
+    public bool GameOver { get; set; }
+    /// <summary>
+    /// Флаг, указывающий, выиграл ли игрок.
+    /// </summary>
+    public bool GameWon { get; set; } 
+    /// <summary>
+    /// Координата X выпадающего бонуса.
+    /// </summary>
+    public float BonusX { get; set; }
+    /// <summary>
+    /// Координата Y выпадающего бонуса.
+    /// </summary>
+    public float BonusY { get; set; }
+    /// <summary>
+    /// Флаг, указывающий, активен ли бонус (падает или находится на платформе).
+    /// </summary>
+    public bool IsBonusActive { get; set; } 
+    /// <summary>
+    /// Размер (диаметр) бонуса.
+    /// </summary>
+    public int BonusSize { get; set; } = 20;
+
+    private int _bonusSpawnTimer;
+    private int _bonusEffectTimer;
+    private const int DefaultPaddleWidth = 100;
+    private readonly Random _random = new Random();
+    
+    private const int RowsOfArrayBlock = 3;
+    private const int ColsOfArrayBlock = 8;
+    private const int BWidth = 65;
+    private const int BHeight = 20;
+    private int _healthNow = 3;
+    private const int PaddleBottomOffset = 40;
+
+    private const int PaddleHorizontalMargin = 20;
+    private const int DeadZoneOffset = 40;
+    
+    private const int GridOffsetX = 20;
+    private const int GridOffsetY = 40;
+    private const int BlockSpacing = 5;
+    
+    private const float InitialBallSpeedY = -5f;
+    private const float InitialBallSpeedX = 0f;
+    
+    private const int TopWallOffset = 40;
+    private const float PaddleBounceInfluence = 0.15f;
+    
+    private const int BonusSpawnInterval = 1250;
+    private const float BonusFallSpeed = 3f;
+    private const int BonusSpawnMinX = 30; 
+    private const int BonusSpawnY = 40;
+    private const int BonusEffectDuration = 400; 
+    /// <summary>
+    /// Конструктор движка игры. Инициализирует размеры поля, создает список блоков
+    /// и рассчитывает максимальное количество очков.
+    /// </summary>
+    public GameEngine(int width, int height)
+    {
+        GameWidth = width;
+        GameHeight = height;
+        Blocks = new List<Block>();
+        MaxScore = 0;
+        for (var i = 0; i < RowsOfArrayBlock; i++)
+        {
+            for (var j = 0; j < ColsOfArrayBlock; j++)
+            {
+                int blockPositionX = PaddleHorizontalMargin + GridOffsetX + j * (BWidth+BlockSpacing);
+                int blockPositionY = PaddleHorizontalMargin + GridOffsetY + i * (BHeight+BlockSpacing);
+                int healthResult = _healthNow - i;
+                Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
+
+            } 
+            int currentBlockHealthForScore = _healthNow - i; 
+            if (currentBlockHealthForScore < 1) currentBlockHealthForScore = 1; 
+            MaxScore += ColsOfArrayBlock * currentBlockHealthForScore * 10;
+        }
+        PaddleY = height - PaddleBottomOffset; 
+        PaddleX = (width / 2f) - (PaddleWidth / 2f);
+    }
+    /// <summary>
+    /// Создает новый набор блоков на игровом поле.
+    /// Очищает старые блоки перед созданием новых.
+    /// </summary>
+    public void CreateBlocks()
+    {
+        Blocks.Clear();
+        for (var i = 0; i < RowsOfArrayBlock; i++)
+        {
+            for (var j = 0; j < ColsOfArrayBlock; j++)
+            {
+                int blockPositionX = PaddleHorizontalMargin + GridOffsetX + j * (BWidth+BlockSpacing);
+                int blockPositionY = PaddleHorizontalMargin + GridOffsetY + i * (BHeight+BlockSpacing);
+                int healthResult = _healthNow - i;
+                Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
+            } 
+        }
+    }
+    /// <summary>
+    /// Сбрасывает состояние игры к начальному
+    /// </summary>
+    public void ResetBall()
+    {
+        IsStarted = false;
+        BallVX = 0;
+        BallVY = 0; 
+        BallX = PaddleX + (PaddleWidth / 2f) - (BallSize / 2f);
+        BallY = PaddleY - BallSize;
+    }
+    /// <summary>
+    /// Обрабатывает движение мыши для управления платформой.
+    /// </summary>
+    public void MovePaddle(int mouseX)
+    {
+        var newX = mouseX - (PaddleWidth / 2f);
+        if (newX < PaddleHorizontalMargin) newX = PaddleHorizontalMargin; 
+        if (newX + PaddleWidth > GameWidth + PaddleHorizontalMargin) newX = GameWidth + PaddleHorizontalMargin - PaddleWidth;
+        PaddleX = newX;
+        if (!IsStarted)
+        {
+            BallX = PaddleX + (PaddleWidth / 2f) -  (BallSize / 2f);
+            BallY = PaddleY - BallSize;
+        }
+    }
+    /// <summary>
+    /// Запускает мяч с платформы при клике мыши.
+    /// </summary>
+    public void StartBall()
+    {
+        if (!IsStarted)
+        {
+            IsStarted = true;
+            BallVX = InitialBallSpeedX;
+            BallVY = InitialBallSpeedY;
+        }
+    }
+    /// <summary>
+    /// Основной метод обновления состояния игры (игровой цикл).
+    /// </summary>
+    public void Update()
+    {
+        if (GameOver || GameWon) return;
+        if (IsStarted)
+        {
+            BallX += BallVX;
+            BallY += BallVY;
+        }
+        if (BallX <= PaddleHorizontalMargin)
+        {
+            BallX = PaddleHorizontalMargin; 
+            BallVX = Math.Abs(BallVX);
+        }
+        else if (BallX + BallSize >= GameWidth + PaddleHorizontalMargin)
+        {
+            BallX = GameWidth + PaddleHorizontalMargin - BallSize;
+            BallVX = -Math.Abs(BallVX); 
+        }
+        if (BallY <= TopWallOffset)
+        {
+            BallY = TopWallOffset;
+            BallVY = Math.Abs(BallVY); 
+        }
+        if (BallVY > 0 && BallY + BallSize >= PaddleY && BallY + BallSize <= PaddleY + PaddleHeight && BallX + BallSize >= PaddleX && BallX <= PaddleX + PaddleWidth)
+        {
+            BallVY = -Math.Abs(BallVY);
+            var paddleCenter = PaddleX + (PaddleWidth / 2f);
+            var ballCenter = BallX + (BallSize / 2f);
+            BallVX = (ballCenter - paddleCenter) * PaddleBounceInfluence;
+        }
+        for (var i = Blocks.Count - 1; i >=0; i--)
+        {
+            var b = Blocks[i];
+            if (!(BallX + BallSize >= b.X && BallX <= b.X + b.Width &
+                BallY + BallSize >= b.Y && BallY <= b.Y + b.Height)) continue;
+            BallVY = -BallVY; 
+            b.Health--;
+            Score += 10;
+            if (b.Health <= 0) Blocks.RemoveAt(i); 
+            if (Blocks.Count == 0) GameWon = true;
+            break;
+        }
+        if (BallY+BallSize >= GameHeight + DeadZoneOffset)
+        {
+            Lives--;
+            if (Lives <= 0) 
+            {
+                Lives = 0;
+                GameOver = true;
+            }
+            else ResetBall();
+        };
+        if (IsStarted)
+        {
+            _bonusSpawnTimer++;
+            if (_bonusSpawnTimer >= BonusSpawnInterval)
+            {
+                SpawnBonus();
+                _bonusSpawnTimer = 0;
+            }
+        }
+        if (IsBonusActive && IsStarted)
+        {
+            BonusY += BonusFallSpeed;
+            if (BonusY + BonusSize >= PaddleY &&
+                BonusY <= PaddleY + PaddleHeight &&
+                BonusX + BonusSize >= PaddleX &&
+                BonusX <= PaddleX + PaddleWidth)
+            {
+                ActivateBonusEffect();
+                IsBonusActive = false;
+            }
+            if (BonusY > GameHeight + DeadZoneOffset) IsBonusActive = false;
+        }
+        if (_bonusEffectTimer > 0 && IsStarted)
+        {
+            _bonusEffectTimer--;
+            if (_bonusEffectTimer <= 0) PaddleWidth = DefaultPaddleWidth;
+        }
+    }
+    /// <summary>
+    /// Спавнит новый бонус в случайной позиции над игровым полем.
+    /// </summary>
+    private void SpawnBonus()
+    {
+        BonusX = _random.Next(BonusSpawnMinX, GameWidth);
+        BonusY = BonusSpawnY;
+        IsBonusActive = true;
+    }
+    /// <summary>
+    /// Активирует эффект пойманного бонуса.
+    /// </summary>
+    private void ActivateBonusEffect()
+    {
+        PaddleWidth = DefaultPaddleWidth * 2;
+        _bonusEffectTimer = BonusEffectDuration;
+    }
+}
