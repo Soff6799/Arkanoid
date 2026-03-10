@@ -7,11 +7,11 @@ public class GameEngine
     /// <summary>
     /// Текущее количество очков игрока.
     /// </summary>
-    public int Score { get; set; } = 0;
+    public int Score { get; set; }
     /// <summary>
     /// Максимально возможное количество очков за полное уничтожение всех блоков.
     /// </summary>
-    public int MaxScore { get; private set; }
+    public int MaxScore { get; }
     /// <summary>
     /// Координата X центра мяча
     /// </summary>

@@ -7,29 +7,29 @@ using System.Windows.Forms;
 /// </summary>
 public partial class Form : System.Windows.Forms.Form
 {
-    private GameEngine _engine;
-    private System.Windows.Forms.Timer _timer;
+    private GameEngine engine;
+    private Timer timer;
     /// <summary>
     /// Конструктор формы. Инициализирует игровой движок, таймер,устанавливает обработчики событий и запускает игровой цикл.
     /// </summary>
     public Form()
     {
         InitializeComponent();
-        _engine = new GameEngine( Constants.DefoultScreenWidth, Constants.DefoultScreenHeight );
-        BackgroundImage = ArcadeGame.Resources.background;
+        engine = new GameEngine( Constants.DefoultScreenWidth, Constants.DefoultScreenHeight );
+        BackgroundImage = Resources.background;
         BackgroundImageLayout = ImageLayout.Stretch;
         
-        _timer = new System.Windows.Forms.Timer();
-        _timer.Interval = Constants.TimerIntervalMc; 
-        _timer.Tick += TimerTick; 
-        _timer.Start();
-        MouseMove += (sender, e) => _engine.MovePaddle(e.X);
+        timer = new Timer();
+        timer.Interval = Constants.TimerIntervalMc; 
+        timer.Tick += TimerTick; 
+        timer.Start();
+        MouseMove += (sender, e) => engine.MovePaddle(e.X);
         MouseClick += Form_MouseClick;
         ButtonStartAgain.Visible = false;
     }
     private void TimerTick(object sender, EventArgs e)
     {
-        _engine.Update();
+        engine.Update();
         using (Graphics g = CreateGraphics())
         {
             using (BufferedGraphics buffer = BufferedGraphicsManager.Current.Allocate(g, ClientRectangle))
@@ -42,8 +42,8 @@ public partial class Form : System.Windows.Forms.Form
     private void RenderScene(Graphics g)
     {
         if (BackgroundImage != null) g.DrawImage(BackgroundImage, ClientRectangle);
-        using (Pen wallPen = new Pen(Color.LemonChiffon, Constants.BordersWidth)) g.DrawRectangle(wallPen, Constants.DrawingBordersX, Constants.DrawingBordersY, _engine.GameWidth, _engine.GameHeight);
-        foreach (var block in _engine.Blocks)
+        using (Pen wallPen = new Pen(Color.LemonChiffon, Constants.BordersWidth)) g.DrawRectangle(wallPen, Constants.DrawingBordersX, Constants.DrawingBordersY, engine.GameWidth, engine.GameHeight);
+        foreach (var block in engine.Blocks)
         {
             Brush brush;
             switch (block.Health)
@@ -56,11 +56,11 @@ public partial class Form : System.Windows.Forms.Form
             g.FillRectangle(brush, block.X, block.Y, block.Width, block.Height);
             g.DrawRectangle(Pens.DimGray, block.X, block.Y, block.Width, block.Height);
         }
-        g.FillEllipse(Brushes.Yellow, _engine.BallX, _engine.BallY, _engine.BallSize, _engine.BallSize);
-        g.FillRectangle(Brushes.Black, _engine.PaddleX, _engine.PaddleY, _engine.PaddleWidth, _engine.PaddleHeight);
-        g.DrawRectangle(Pens.DimGray, _engine.PaddleX, _engine.PaddleY, _engine.PaddleWidth, _engine.PaddleHeight);
+        g.FillEllipse(Brushes.Yellow, engine.BallX, engine.BallY, engine.BallSize, engine.BallSize);
+        g.FillRectangle(Brushes.Black, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
+        g.DrawRectangle(Pens.DimGray, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
         
-        var heartsX = _engine.GameWidth + Constants.UISidebarPadding;
+        var heartsX = engine.GameWidth + Constants.UISidebarPadding;
         Font titleFont = new Font(Constants.GameFontFamily, Constants.TitleFontSize, FontStyle.Bold);
         Font statusFont = new Font(Constants.GameFontFamily, Constants.StatusFontSize, FontStyle.Bold);
         g.DrawString("Arcade game", titleFont, Brushes.White, heartsX, Constants.DistanceYName);
@@ -70,45 +70,45 @@ public partial class Form : System.Windows.Forms.Form
             {
                 var yPos = Constants.DistanceOfLives + (i * Constants.DistanceBetweenLives);
                 g.DrawEllipse(redPen, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
-                if (i < _engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
+                if (i < engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
             }
         }
-        if (_engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, Constants.DistanceToGameSituation);
-        if (_engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, Constants.DistanceToGameSituation);
-        if (_engine.GameOver || _engine.GameWon) ButtonStartAgain.Visible = true;
-        if (_engine.IsBonusActive)
+        if (engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, Constants.DistanceToGameSituation);
+        if (engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, Constants.DistanceToGameSituation);
+        if (engine.GameOver || engine.GameWon) ButtonStartAgain.Visible = true;
+        if (engine.IsBonusActive)
         {
-            g.FillEllipse(Brushes.Magenta, _engine.BonusX, _engine.BonusY, _engine.BonusSize, _engine.BonusSize);
-            g.DrawEllipse(Pens.White, _engine.BonusX, _engine.BonusY, _engine.BonusSize, _engine.BonusSize);
+            g.FillEllipse(Brushes.Magenta, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
+            g.DrawEllipse(Pens.White, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
         }
-        string scoreText = $"{_engine.Score} / {_engine.MaxScore}";
+        string scoreText = $"{engine.Score} / {engine.MaxScore}";
         float scoreX = heartsX; 
-        float scoreY = _engine.GameHeight - 40;
+        float scoreY = engine.GameHeight - 40;
         g.DrawString(scoreText, statusFont, Brushes.White, scoreX, scoreY);
     }
 
     private void Form_Load(object sender, EventArgs e)
     {
         Point paddleCenterClient = new Point(
-            (int)(_engine.PaddleX + _engine.PaddleWidth / 2),
-            (int)(_engine.PaddleY + _engine.PaddleHeight / 2));
+            (int)(engine.PaddleX + engine.PaddleWidth / 2),
+            (int)(engine.PaddleY + engine.PaddleHeight / 2));
         Point paddleCenterScreen = PointToScreen(paddleCenterClient);
         Cursor.Position = paddleCenterScreen;
     }
     
-    private void Form_MouseClick(object sender, MouseEventArgs e) => _engine.StartBall();
+    private void Form_MouseClick(object sender, MouseEventArgs e) => engine.StartBall();
     
     private void ResetGame()
     {
-        _engine.Lives = Constants.NumberOfLives;
-        _engine.GameOver = false;
-        _engine.GameWon = false;
-        _engine.Score = 0;
-        _engine.CreateBlocks();
-        _engine.ResetBall();
+        engine.Lives = Constants.NumberOfLives;
+        engine.GameOver = false;
+        engine.GameWon = false;
+        engine.Score = 0;
+        engine.CreateBlocks();
+        engine.ResetBall();
         ButtonStartAgain.Visible = false;
-        _engine.IsBonusActive = false;
-        _engine.PaddleWidth = Constants.StandardPlatformWidth;
+        engine.IsBonusActive = false;
+        engine.PaddleWidth = Constants.StandardPlatformWidth;
     }
     
     private void ButtonStartAgain_Click(object sender, EventArgs e) => ResetGame();
