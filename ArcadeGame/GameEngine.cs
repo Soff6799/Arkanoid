@@ -93,15 +93,11 @@ public class GameEngine
     /// </summary>
     public int BonusSize { get; set; } = 20;
 
-    private int _healthNow = 3;
-    private int _bonusSpawnTimer;
-    private int _bonusEffectTimer;
-    private readonly Random _random = new Random();
+    private int healthNow = 3;
+    private int bonusSpawnTimer;
+    private int bonusEffectTimer;
+    private readonly Random random = new Random();
     
-    private const int RowsOfArrayBlock = 3;
-    private const int ColsOfArrayBlock = 8;
-    private const int BWidth = 65;
-    private const int BHeight = 20;
     /// <summary>
     /// Конструктор движка игры. Инициализирует размеры поля, создает список блоков
     /// и рассчитывает максимальное количество очков.
@@ -112,19 +108,19 @@ public class GameEngine
         GameHeight = height;
         Blocks = new List<Block>();
         MaxScore = 0;
-        for (var i = 0; i < RowsOfArrayBlock; i++)
+        for (var i = 0; i < Constants.RowsOfArrayBlock; i++)
         {
-            for (var j = 0; j < ColsOfArrayBlock; j++)
+            for (var j = 0; j < Constants.ColsOfArrayBlock; j++)
             {
-                int blockPositionX = Constants.PaddleHorizontalMargin + Constants.GridOffsetX + j * (BWidth+Constants.BlockSpacing);
-                int blockPositionY = Constants.PaddleHorizontalMargin + Constants.GridOffsetY + i * (BHeight+Constants.BlockSpacing);
-                int healthResult = _healthNow - i;
+                int blockPositionX = Constants.PaddleHorizontalMargin + Constants.GridOffsetX + j * (Constants.BWidth+Constants.BlockSpacing);
+                int blockPositionY = Constants.PaddleHorizontalMargin + Constants.GridOffsetY + i * (Constants.BHeight+Constants.BlockSpacing);
+                int healthResult = healthNow - i;
                 Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
 
             } 
-            int currentBlockHealthForScore = _healthNow - i; 
+            int currentBlockHealthForScore = healthNow - i; 
             if (currentBlockHealthForScore < 1) currentBlockHealthForScore = 1; 
-            MaxScore += ColsOfArrayBlock * currentBlockHealthForScore * 10;
+            MaxScore += Constants.ColsOfArrayBlock * currentBlockHealthForScore * 10;
         }
         PaddleY = height - Constants.PaddleBottomOffset; 
         PaddleX = (width / 2f) - (PaddleWidth / 2f);
@@ -136,13 +132,13 @@ public class GameEngine
     public void CreateBlocks()
     {
         Blocks.Clear();
-        for (var i = 0; i < RowsOfArrayBlock; i++)
+        for (var i = 0; i < Constants.RowsOfArrayBlock; i++)
         {
-            for (var j = 0; j < ColsOfArrayBlock; j++)
+            for (var j = 0; j < Constants.ColsOfArrayBlock; j++)
             {
-                int blockPositionX = Constants.PaddleHorizontalMargin + Constants.GridOffsetX + j * (BWidth+Constants.BlockSpacing);
-                int blockPositionY = Constants.PaddleHorizontalMargin + Constants.GridOffsetY + i * (BHeight+Constants.BlockSpacing);
-                int healthResult = _healthNow - i;
+                int blockPositionX = Constants.PaddleHorizontalMargin + Constants.GridOffsetX + j * (Constants.BWidth+Constants.BlockSpacing);
+                int blockPositionY = Constants.PaddleHorizontalMargin + Constants.GridOffsetY + i * (Constants.BHeight+Constants.BlockSpacing);
+                int healthResult = healthNow - i;
                 Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
             } 
         }
@@ -242,11 +238,11 @@ public class GameEngine
         };
         if (IsStarted)
         {
-            _bonusSpawnTimer++;
-            if (_bonusSpawnTimer >= Constants.BonusSpawnInterval)
+            bonusSpawnTimer++;
+            if (bonusSpawnTimer >= Constants.BonusSpawnInterval)
             {
                 SpawnBonus();
-                _bonusSpawnTimer = 0;
+                bonusSpawnTimer = 0;
             }
         }
         if (IsBonusActive && IsStarted)
@@ -262,10 +258,10 @@ public class GameEngine
             }
             if (BonusY > GameHeight + Constants.DeadZoneOffset) IsBonusActive = false;
         }
-        if (_bonusEffectTimer > 0 && IsStarted)
+        if (bonusEffectTimer > 0 && IsStarted)
         {
-            _bonusEffectTimer--;
-            if (_bonusEffectTimer <= 0) PaddleWidth = Constants.DefaultPaddleWidth;
+            bonusEffectTimer--;
+            if (bonusEffectTimer <= 0) PaddleWidth = Constants.DefaultPaddleWidth;
         }
     }
     /// <summary>
@@ -273,7 +269,7 @@ public class GameEngine
     /// </summary>
     private void SpawnBonus()
     {
-        BonusX = _random.Next(Constants.BonusSpawnMinX, GameWidth);
+        BonusX = random.Next(Constants.BonusSpawnMinX, GameWidth);
         BonusY = Constants.BonusSpawnY;
         IsBonusActive = true;
     }
@@ -283,6 +279,6 @@ public class GameEngine
     private void ActivateBonusEffect()
     {
         PaddleWidth = Constants.DefaultPaddleWidth * 2;
-        _bonusEffectTimer = Constants.BonusEffectDuration;
+        bonusEffectTimer = Constants.BonusEffectDuration;
     }
 }
