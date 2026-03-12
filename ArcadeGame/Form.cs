@@ -9,6 +9,7 @@ public partial class Form : System.Windows.Forms.Form
 {
     private GameEngine engine;
     private Timer timer;
+    private BufferedGraphics gameBuffer;
     
     /// <summary>
     /// Конструктор формы. Инициализирует игровой движок,
@@ -31,14 +32,28 @@ public partial class Form : System.Windows.Forms.Form
     }
     private void TimerTick(object sender, EventArgs e)
     {
+        // 1. Обновляем логику
         engine.Update();
-        using (Graphics g = CreateGraphics())
+
+        // 2. Если буфер еще не создан, создаем его ОДИН РАЗ
+        if (gameBuffer == null)
         {
-            using (BufferedGraphics buffer = BufferedGraphicsManager.Current.Allocate(g, ClientRectangle))
+            using (Graphics tempG = this.CreateGraphics())
             {
-                RenderScene(buffer.Graphics);
-                buffer.Render(g);
+                gameBuffer = BufferedGraphicsManager.Current.Allocate(tempG, this.ClientRectangle);
             }
+        }
+
+        // 3. Рисуем всё в наш постоянный буфер
+        Graphics g = gameBuffer.Graphics;
+        g.Clear(this.BackColor); // Очистка фона
+        RenderScene(g);          // Ваша отрисовка
+
+        // 4. Используем using для вывода буфера на экран
+        // Это именно то, что вы просили: ручная буферизация + using
+        using (Graphics screenGraphics = this.CreateGraphics())
+        {
+            gameBuffer.Render(screenGraphics);
         }
     }
     private void RenderScene(Graphics g)
