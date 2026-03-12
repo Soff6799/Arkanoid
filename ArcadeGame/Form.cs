@@ -102,7 +102,7 @@ public partial class Form : System.Windows.Forms.Form
         }
         string scoreText = $"{engine.Score} / {engine.MaxScore}";
         float scoreX = heartsX; 
-        float scoreY = engine.GameHeight - 40;
+        float scoreY = engine.GameHeight - ConstantsForm.ScoreDisplayOffsetY;
         g.DrawString(scoreText, statusFont, Brushes.White, scoreX, scoreY);
     }
 

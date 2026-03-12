@@ -91,4 +91,10 @@ public static class ConstantsForm
     /// Стандартная (базовая) ширина платформы.
     /// </summary>
     public const int StandardPlatformWidth = 100;
+    
+    /// <summary>
+    /// Отступ для отображения счета от нижнего края игрового поля.
+    /// </summary>
+    public const int ScoreDisplayOffsetY = 40;
+
 }
