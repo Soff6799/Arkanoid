@@ -1,7 +1,7 @@
 namespace ArcadeGame;
-using System;
 using System.Drawing; 
 using System.Windows.Forms;
+
 /// <summary>
 /// Основная форма приложения игры. Управляет отрисовкой, игровым циклом и обработкой ввода пользователя.
 /// </summary>
@@ -9,18 +9,20 @@ public partial class Form : System.Windows.Forms.Form
 {
     private GameEngine engine;
     private Timer timer;
+    
     /// <summary>
-    /// Конструктор формы. Инициализирует игровой движок, таймер,устанавливает обработчики событий и запускает игровой цикл.
+    /// Конструктор формы. Инициализирует игровой движок,
+    /// таймер,устанавливает обработчики событий и запускает игровой цикл.
     /// </summary>
     public Form()
     {
         InitializeComponent();
-        engine = new GameEngine( Constants.DefoultScreenWidth, Constants.DefoultScreenHeight );
+        engine = new GameEngine( ConstantsForm.DefaultScreenWidth, ConstantsForm.DefaultScreenHeight );
         BackgroundImage = Resources.background;
         BackgroundImageLayout = ImageLayout.Stretch;
         
         timer = new Timer();
-        timer.Interval = Constants.TimerIntervalMc; 
+        timer.Interval = ConstantsForm.TimerIntervalMc; 
         timer.Tick += TimerTick; 
         timer.Start();
         MouseMove += (sender, e) => engine.MovePaddle(e.X);
@@ -42,7 +44,8 @@ public partial class Form : System.Windows.Forms.Form
     private void RenderScene(Graphics g)
     {
         if (BackgroundImage != null) g.DrawImage(BackgroundImage, ClientRectangle);
-        using (Pen wallPen = new Pen(Color.LemonChiffon, Constants.BordersWidth)) g.DrawRectangle(wallPen, Constants.DrawingBordersX, Constants.DrawingBordersY, engine.GameWidth, engine.GameHeight);
+        using (Pen wallPen = new Pen(Color.LemonChiffon, ConstantsForm.BordersWidth)) g.DrawRectangle(wallPen, 
+            ConstantsForm.DrawingBordersX, ConstantsForm.DrawingBordersY, engine.GameWidth, engine.GameHeight);
         foreach (var block in engine.Blocks)
         {
             Brush brush;
@@ -60,21 +63,22 @@ public partial class Form : System.Windows.Forms.Form
         g.FillRectangle(Brushes.Black, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
         g.DrawRectangle(Pens.DimGray, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
         
-        var heartsX = engine.GameWidth + Constants.UISidebarPadding;
-        Font titleFont = new Font(Constants.GameFontFamily, Constants.TitleFontSize, FontStyle.Bold);
-        Font statusFont = new Font(Constants.GameFontFamily, Constants.StatusFontSize, FontStyle.Bold);
-        g.DrawString("Arcade game", titleFont, Brushes.White, heartsX, Constants.DistanceYName);
-        using (Pen redPen = new Pen(Color.Red, Constants.WidthOfCirclesOfLives))
+        var heartsX = engine.GameWidth + ConstantsForm.UiSidebarPadding;
+        Font titleFont = new Font(ConstantsForm.GameFontFamily, ConstantsForm.TitleFontSize, FontStyle.Bold);
+        Font statusFont = new Font(ConstantsForm.GameFontFamily, ConstantsForm.StatusFontSize, FontStyle.Bold);
+        g.DrawString("Arcade game", titleFont, Brushes.White, heartsX, ConstantsForm.DistanceYName);
+        using (Pen redPen = new Pen(Color.Red, ConstantsForm.WidthOfCirclesOfLives))
         {
-            for (var i = 0; i < Constants.NumberOfLives; i++)
+            for (var i = 0; i < ConstantsForm.NumberOfLives; i++)
             {
-                var yPos = Constants.DistanceOfLives + (i * Constants.DistanceBetweenLives);
-                g.DrawEllipse(redPen, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
-                if (i < engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, Constants.LifeCircleDiameter, Constants.LifeCircleDiameter);
+                var yPos = ConstantsForm.DistanceOfLives + (i * ConstantsForm.DistanceBetweenLives);
+                g.DrawEllipse(redPen, heartsX, yPos, ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);
+                if (i < engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, 
+                    ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);
             }
         }
-        if (engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, Constants.DistanceToGameSituation);
-        if (engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, Constants.DistanceToGameSituation);
+        if (engine.GameOver) g.DrawString("You've lost!", statusFont, Brushes.Red, heartsX, ConstantsForm.DistanceToGameSituation);
+        if (engine.GameWon) g.DrawString("You've won!", statusFont, Brushes.Gold, heartsX, ConstantsForm.DistanceToGameSituation);
         if (engine.GameOver || engine.GameWon) ButtonStartAgain.Visible = true;
         if (engine.IsBonusActive)
         {
@@ -100,7 +104,7 @@ public partial class Form : System.Windows.Forms.Form
     
     private void ResetGame()
     {
-        engine.Lives = Constants.NumberOfLives;
+        engine.Lives = ConstantsForm.NumberOfLives;
         engine.GameOver = false;
         engine.GameWon = false;
         engine.Score = 0;
@@ -108,7 +112,7 @@ public partial class Form : System.Windows.Forms.Form
         engine.ResetBall();
         ButtonStartAgain.Visible = false;
         engine.IsBonusActive = false;
-        engine.PaddleWidth = Constants.StandardPlatformWidth;
+        engine.PaddleWidth = ConstantsForm.StandardPlatformWidth;
     }
     
     private void ButtonStartAgain_Click(object sender, EventArgs e) => ResetGame();
