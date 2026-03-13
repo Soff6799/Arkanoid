@@ -39,6 +39,7 @@ public partial class ArkanoidForm : Form
         MouseClick += Form_MouseClick;
         ButtonStartAgain.Visible = false;
     }
+    
     private void TimerTick(object sender, EventArgs e)
     {
         engine.Update();
@@ -49,7 +50,7 @@ public partial class ArkanoidForm : Form
                 gameBuffer = BufferedGraphicsManager.Current.Allocate(tempG, this.ClientRectangle);
             }
         }
-        Graphics g = gameBuffer.Graphics;
+        var g = gameBuffer.Graphics;
         g.Clear(this.BackColor);
         RenderScene(g);        
         using (Graphics screenGraphics = this.CreateGraphics())
@@ -60,7 +61,7 @@ public partial class ArkanoidForm : Form
     
     private void RenderScene(Graphics g)
     {
-        if (BackgroundImage != null) g.DrawImage(BackgroundImage, ClientRectangle);
+        if (BackgroundImage != null) {g.DrawImage(BackgroundImage, ClientRectangle);}
         g.DrawRectangle(fieldBorderPen, ConstantsForm.DrawingBordersX, ConstantsForm.DrawingBordersY, engine.GameWidth, engine.GameHeight);
         foreach (var block in engine.Blocks)
         {
@@ -84,29 +85,29 @@ public partial class ArkanoidForm : Form
         {
             var yPos = ConstantsForm.DistanceOfLives + (i * ConstantsForm.DistanceBetweenLives);
             g.DrawEllipse(lifeIndicatorPen, heartsX, yPos, ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);
-            if (i < engine.Lives) g.FillEllipse(Brushes.Red, heartsX, yPos, 
-                ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);
+            if (i < engine.Lives) {g.FillEllipse(Brushes.Red, heartsX, yPos, 
+                ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);}
         }
-        if (engine.GameOver) g.DrawString("You've lost!", gameStatusFont, Brushes.Red, heartsX, ConstantsForm.DistanceToGameSituation);
-        if (engine.GameWon) g.DrawString("You've won!", gameStatusFont, Brushes.Gold, heartsX, ConstantsForm.DistanceToGameSituation);
-        if (engine.GameOver || engine.GameWon) ButtonStartAgain.Visible = true;
+        if (engine.GameOver) {g.DrawString("You've lost!", gameStatusFont, Brushes.Red, heartsX, ConstantsForm.DistanceToGameSituation);}
+        if (engine.GameWon) {g.DrawString("You've won!", gameStatusFont, Brushes.Gold, heartsX, ConstantsForm.DistanceToGameSituation);}
+        if (engine.GameOver || engine.GameWon) {ButtonStartAgain.Visible = true;}
         if (engine.IsBonusActive)
         {
             g.FillEllipse(Brushes.Magenta, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
             g.DrawEllipse(Pens.White, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
         }
-        string scoreText = $"{engine.Score} / {engine.MaxScore}";
-        float scoreX = heartsX; 
-        float scoreY = engine.GameHeight - ConstantsForm.ScoreDisplayOffsetY;
+        var scoreText = $"{engine.Score} / {engine.MaxScore}";
+        var scoreX = heartsX; 
+        var scoreY = engine.GameHeight - ConstantsForm.ScoreDisplayOffsetY;
         g.DrawString(scoreText, gameStatusFont, scoreBrush, scoreX, scoreY);
     }
 
     private void Form_Load(object sender, EventArgs e)
     {
-        Point paddleCenterClient = new Point(
+        var paddleCenterClient = new Point(
             (int)(engine.PaddleX + engine.PaddleWidth / 2),
             (int)(engine.PaddleY + engine.PaddleHeight / 2));
-        Point paddleCenterScreen = PointToScreen(paddleCenterClient);
+        var paddleCenterScreen = PointToScreen(paddleCenterClient);
         Cursor.Position = paddleCenterScreen;
     }
     

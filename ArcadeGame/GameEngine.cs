@@ -142,7 +142,7 @@ public class GameEngine
 
             } 
             int currentBlockHealthForScore = healthNow - i; 
-            if (currentBlockHealthForScore < 1) currentBlockHealthForScore = 1; 
+            if (currentBlockHealthForScore < 1) {currentBlockHealthForScore = 1;} 
             MaxScore += ConstantsGameEngine.ColsOfArrayBlock * currentBlockHealthForScore * ConstantsGameEngine.PointsPerHealthUnit;
         }
         PaddleY = height - ConstantsGameEngine.PaddleBottomOffset; 
@@ -188,9 +188,9 @@ public class GameEngine
     public void MovePaddle(int mouseX)
     {
         var newX = mouseX - (PaddleWidth / 2f);
-        if (newX < ConstantsGameEngine.PaddleHorizontalMargin) newX = ConstantsGameEngine.PaddleHorizontalMargin; 
-        if (newX + PaddleWidth > GameWidth + ConstantsGameEngine.PaddleHorizontalMargin) newX 
-            = GameWidth + ConstantsGameEngine.PaddleHorizontalMargin - PaddleWidth;
+        if (newX < ConstantsGameEngine.PaddleHorizontalMargin) {newX = ConstantsGameEngine.PaddleHorizontalMargin;} 
+        if (newX + PaddleWidth > GameWidth + ConstantsGameEngine.PaddleHorizontalMargin) {newX 
+            = GameWidth + ConstantsGameEngine.PaddleHorizontalMargin - PaddleWidth;}
         PaddleX = newX;
         if (!IsStarted)
         {
@@ -217,7 +217,7 @@ public class GameEngine
     /// </summary>
     public void Update()
     {
-        if (GameOver || GameWon) return;
+        if (GameOver || GameWon) {return;}
         if (IsStarted)
         {
             BallX += BallVX;
@@ -288,7 +288,7 @@ public class GameEngine
                 ActivateBonusEffect();
                 IsBonusActive = false;
             }
-            if (BonusY > GameHeight + ConstantsGameEngine.DeadZoneOffset) IsBonusActive = false;
+            if (BonusY > GameHeight + ConstantsGameEngine.DeadZoneOffset) {IsBonusActive = false;}
         }
         if (bonusEffectTimer > 0 && IsStarted)
         {
