@@ -15,6 +15,7 @@ public partial class ArkanoidForm : Form
     private Pen lifeIndicatorPen;
     private Font headerTitleFont;
     private Font gameStatusFont;
+    private string scoreText;          // Готовая строка счета
     
     /// <summary>
     /// Конструктор формы. Инициализирует игровой движок,
@@ -23,6 +24,7 @@ public partial class ArkanoidForm : Form
     public ArkanoidForm()
     {
         InitializeComponent();
+        scoreText = "0 / 0";
         fieldBorderPen = new Pen(Color.LemonChiffon, ConstantsForm.BordersWidth);
         scoreBrush = new SolidBrush(Color.White);
         lifeIndicatorPen = new Pen(Color.Red, ConstantsForm.WidthOfCirclesOfLives);
@@ -43,6 +45,7 @@ public partial class ArkanoidForm : Form
     private void TimerTick(object sender, EventArgs e)
     {
         engine.Update();
+        scoreText = $"{engine.Score} / {engine.MaxScore}";
         if (gameBuffer == null)
         {
             using (Graphics tempG = this.CreateGraphics())
@@ -96,10 +99,8 @@ public partial class ArkanoidForm : Form
             g.FillEllipse(Brushes.Magenta, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
             g.DrawEllipse(Pens.White, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
         }
-        var scoreText = $"{engine.Score} / {engine.MaxScore}";
-        var scoreX = heartsX; 
         var scoreY = engine.GameHeight - ConstantsForm.ScoreDisplayOffsetY;
-        g.DrawString(scoreText, gameStatusFont, scoreBrush, scoreX, scoreY);
+        g.DrawString(scoreText, gameStatusFont, scoreBrush, heartsX, scoreY);
     }
 
     private void Form_Load(object sender, EventArgs e)
