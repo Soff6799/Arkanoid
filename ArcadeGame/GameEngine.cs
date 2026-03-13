@@ -27,12 +27,12 @@ public class GameEngine
     /// <summary>
     /// Скорость мяча по оси X (горизонтальная).
     /// </summary>
-    public float BallVX { get; set; }
+    public float BallVx { get; set; }
     
     /// <summary>
     /// Скорость мяча по оси Y (вертикальная).
     /// </summary>
-    public float BallVY { get; set; }
+    public float BallVy { get; set; }
     
     /// <summary>
     /// Размер (диаметр) мяча.
@@ -176,8 +176,8 @@ public class GameEngine
     public void ResetBall()
     {
         IsStarted = false;
-        BallVX = 0;
-        BallVY = 0; 
+        BallVx = 0;
+        BallVy = 0; 
         BallX = PaddleX + (PaddleWidth / 2f) - (BallSize / 2f);
         BallY = PaddleY - BallSize;
     }
@@ -207,8 +207,8 @@ public class GameEngine
         if (!IsStarted)
         {
             IsStarted = true;
-            BallVX = ConstantsGameEngine.InitialBallSpeedX;
-            BallVY = ConstantsGameEngine.InitialBallSpeedY;
+            BallVx = ConstantsGameEngine.InitialBallSpeedX;
+            BallVy = ConstantsGameEngine.InitialBallSpeedY;
         }
     }
     
@@ -220,38 +220,38 @@ public class GameEngine
         if (GameOver || GameWon) {return;}
         if (IsStarted)
         {
-            BallX += BallVX;
-            BallY += BallVY;
+            BallX += BallVx;
+            BallY += BallVy;
         }
         if (BallX <= ConstantsGameEngine.PaddleHorizontalMargin)
         {
             BallX = ConstantsGameEngine.PaddleHorizontalMargin; 
-            BallVX = Math.Abs(BallVX);
+            BallVx = Math.Abs(BallVx);
         }
         else if (BallX + BallSize >= GameWidth + ConstantsGameEngine.PaddleHorizontalMargin)
         {
             BallX = GameWidth + ConstantsGameEngine.PaddleHorizontalMargin - BallSize;
-            BallVX = -Math.Abs(BallVX); 
+            BallVx = -Math.Abs(BallVx); 
         }
         if (BallY <= ConstantsGameEngine.TopWallOffset)
         {
             BallY = ConstantsGameEngine.TopWallOffset;
-            BallVY = Math.Abs(BallVY); 
+            BallVy = Math.Abs(BallVy); 
         }
-        if (BallVY > 0 && BallY + BallSize >= PaddleY && BallY + BallSize <= PaddleY + PaddleHeight 
+        if (BallVy > 0 && BallY + BallSize >= PaddleY && BallY + BallSize <= PaddleY + PaddleHeight 
             && BallX + BallSize >= PaddleX && BallX <= PaddleX + PaddleWidth)
         {
-            BallVY = -Math.Abs(BallVY);
+            BallVy = -Math.Abs(BallVy);
             var paddleCenter = PaddleX + (PaddleWidth / 2f);
             var ballCenter = BallX + (BallSize / 2f);
-            BallVX = (ballCenter - paddleCenter) * ConstantsGameEngine.PaddleBounceInfluence;
+            BallVx = (ballCenter - paddleCenter) * ConstantsGameEngine.PaddleBounceInfluence;
         }
         for (var i = Blocks.Count - 1; i >=0; i--)
         {
             var b = Blocks[i];
             if (!(BallX + BallSize >= b.X && BallX <= b.X + b.Width &
                 BallY + BallSize >= b.Y && BallY <= b.Y + b.Height)) continue;
-            BallVY = -BallVY; 
+            BallVy = -BallVy; 
             b.Health--;
             Score += ConstantsGameEngine.PointsPerHealthUnit;
             if (b.Health <= 0) Blocks.RemoveAt(i); 
