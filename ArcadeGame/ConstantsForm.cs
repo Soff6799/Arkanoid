@@ -96,5 +96,4 @@ public static class ConstantsForm
     /// Отступ для отображения счета от нижнего края игрового поля.
     /// </summary>
     public const int ScoreDisplayOffsetY = 40;
-
 }

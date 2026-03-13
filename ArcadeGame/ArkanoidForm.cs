@@ -26,7 +26,7 @@ public partial class ArkanoidForm : Form
         timer.Interval = ConstantsForm.TimerIntervalMc; 
         timer.Tick += TimerTick; 
         timer.Start();
-        MouseMove += (sender, e) => engine.MovePaddle(e.X);
+        MouseMove += (_, e) => engine.MovePaddle(e.X);
         MouseClick += Form_MouseClick;
         ButtonStartAgain.Visible = false;
     }
