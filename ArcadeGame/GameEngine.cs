@@ -17,12 +17,12 @@ public class GameEngine
     /// <summary>
     /// Координата X центра мяча
     /// </summary>
-    public float BallX { get; set; }
+    public float BallX { get; private set; }
     
     /// <summary>
     /// Координата Y центра мяча.
     /// </summary>
-    public float BallY { get; set; }
+    public float BallY { get; private set; }
     
     /// <summary>
     /// Скорость мяча по оси X (горизонтальная).
@@ -47,7 +47,7 @@ public class GameEngine
     /// <summary>
     /// Координата X верхнего левого угла платформы.
     /// </summary>
-    public float PaddleX { get; set; }
+    public float PaddleX { get; private set; }
     
     /// <summary>
     /// Координата Y верхнего левого угла платформы.

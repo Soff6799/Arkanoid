@@ -15,7 +15,7 @@ public partial class ArkanoidForm : Form
     private Pen lifeIndicatorPen;
     private Font headerTitleFont;
     private Font gameStatusFont;
-    private string scoreText;          // Готовая строка счета
+    private string scoreText;      
     
     /// <summary>
     /// Конструктор формы. Инициализирует игровой движок,
@@ -48,15 +48,15 @@ public partial class ArkanoidForm : Form
         scoreText = $"{engine.Score} / {engine.MaxScore}";
         if (gameBuffer == null)
         {
-            using (Graphics tempG = this.CreateGraphics())
+            using (var tempG = CreateGraphics())
             {
-                gameBuffer = BufferedGraphicsManager.Current.Allocate(tempG, this.ClientRectangle);
+                gameBuffer = BufferedGraphicsManager.Current.Allocate(tempG, ClientRectangle);
             }
         }
         var g = gameBuffer.Graphics;
-        g.Clear(this.BackColor);
+        g.Clear(BackColor);
         RenderScene(g);        
-        using (Graphics screenGraphics = this.CreateGraphics())
+        using (var screenGraphics = CreateGraphics())
         {
             gameBuffer.Render(screenGraphics);
         }
