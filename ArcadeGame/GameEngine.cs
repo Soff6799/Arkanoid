@@ -293,7 +293,7 @@ public class GameEngine
         if (bonusEffectTimer > 0 && IsStarted)
         {
             bonusEffectTimer--;
-            if (bonusEffectTimer <= 0) PaddleWidth = ConstantsGameEngine.DefaultPaddleWidth;
+            if (bonusEffectTimer <= 0) {PaddleWidth = ConstantsGameEngine.DefaultPaddleWidth;}
         }
     }
     
