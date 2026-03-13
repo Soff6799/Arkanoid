@@ -1,6 +1,6 @@
 ﻿namespace ArcadeGame;
 
-partial class Form
+partial class ArkanoidForm
 {
     /// <summary>
     ///  Required designer variable.

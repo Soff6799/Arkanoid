@@ -5,7 +5,7 @@ using System.Windows.Forms;
 /// <summary>
 /// Основная форма приложения игры. Управляет отрисовкой, игровым циклом и обработкой ввода пользователя.
 /// </summary>
-public partial class Form : System.Windows.Forms.Form
+public partial class ArkanoidForm : Form
 {
     private GameEngine engine;
     private Timer timer;
@@ -15,7 +15,7 @@ public partial class Form : System.Windows.Forms.Form
     /// Конструктор формы. Инициализирует игровой движок,
     /// таймер,устанавливает обработчики событий и запускает игровой цикл.
     /// </summary>
-    public Form()
+    public ArkanoidForm()
     {
         InitializeComponent();
         engine = new GameEngine( ConstantsForm.DefaultScreenWidth, ConstantsForm.DefaultScreenHeight );
