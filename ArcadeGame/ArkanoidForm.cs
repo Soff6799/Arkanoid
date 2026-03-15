@@ -26,16 +26,16 @@ public partial class ArkanoidForm : Form
     {
         InitializeComponent();
         scoreText = "0 / 0";
-        fieldBorderPen = new Pen(Color.LemonChiffon, ConstantsForm.BordersWidth);
+        fieldBorderPen = new Pen(Color.LemonChiffon, FormConstants.BordersWidth);
         scoreBrush = new SolidBrush(Color.White);
-        lifeIndicatorPen = new Pen(Color.Red, ConstantsForm.WidthOfCirclesOfLives);
-        headerTitleFont = new Font(ConstantsForm.GameFontFamily, ConstantsForm.TitleFontSize, FontStyle.Bold);
-        gameStatusFont = new Font(ConstantsForm.GameFontFamily, ConstantsForm.StatusFontSize, FontStyle.Bold);
-        engine = new GameEngine(ConstantsForm.DefaultScreenWidth, ConstantsForm.DefaultScreenHeight);
+        lifeIndicatorPen = new Pen(Color.Red, FormConstants.WidthOfCirclesOfLives);
+        headerTitleFont = new Font(FormConstants.GameFontFamily, FormConstants.TitleFontSize, FontStyle.Bold);
+        gameStatusFont = new Font(FormConstants.GameFontFamily, FormConstants.StatusFontSize, FontStyle.Bold);
+        engine = new GameEngine(FormConstants.DefaultScreenWidth, FormConstants.DefaultScreenHeight);
         BackgroundImage = Resources.background;
         BackgroundImageLayout = ImageLayout.Stretch;
         timer = new Timer();
-        timer.Interval = ConstantsForm.TimerIntervalMc;
+        timer.Interval = FormConstants.TimerIntervalMc;
         timer.Tick += TimerTick;
         timer.Start();
         MouseMove += (_, e) => engine.MovePaddle(e.X);
@@ -69,7 +69,7 @@ public partial class ArkanoidForm : Form
         {
             g.DrawImage(BackgroundImage, ClientRectangle);
         }
-        g.DrawRectangle(fieldBorderPen, ConstantsForm.DrawingBordersX, ConstantsForm.DrawingBordersY, engine.GameWidth,
+        g.DrawRectangle(fieldBorderPen, FormConstants.DrawingBordersX, FormConstants.DrawingBordersY, engine.GameWidth,
             engine.GameHeight);
         foreach (var block in engine.Blocks)
         {
@@ -87,26 +87,26 @@ public partial class ArkanoidForm : Form
         g.FillEllipse(Brushes.Yellow, engine.BallX, engine.BallY, engine.BallSize, engine.BallSize);
         g.FillRectangle(Brushes.Black, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
         g.DrawRectangle(Pens.DimGray, engine.PaddleX, engine.PaddleY, engine.PaddleWidth, engine.PaddleHeight);
-        var heartsX = engine.GameWidth + ConstantsForm.UiSidebarPadding;
-        g.DrawString("Arcade game", headerTitleFont, Brushes.White, heartsX, ConstantsForm.DistanceYName);
-        for (var i = 0; i < ConstantsForm.NumberOfLives; i++)
+        var heartsX = engine.GameWidth + FormConstants.UiSidebarPadding;
+        g.DrawString("Arcade game", headerTitleFont, Brushes.White, heartsX, FormConstants.DistanceYName);
+        for (var i = 0; i < FormConstants.NumberOfLives; i++)
         {
-            var yPos = ConstantsForm.DistanceOfLives + (i * ConstantsForm.DistanceBetweenLives);
-            g.DrawEllipse(lifeIndicatorPen, heartsX, yPos, ConstantsForm.LifeCircleDiameter,
-                ConstantsForm.LifeCircleDiameter);
+            var yPos = FormConstants.DistanceOfLives + (i * FormConstants.DistanceBetweenLives);
+            g.DrawEllipse(lifeIndicatorPen, heartsX, yPos, FormConstants.LifeCircleDiameter,
+                FormConstants.LifeCircleDiameter);
             if (i < engine.Lives)
             {
                 g.FillEllipse(Brushes.Red, heartsX, yPos,
-                    ConstantsForm.LifeCircleDiameter, ConstantsForm.LifeCircleDiameter);
+                    FormConstants.LifeCircleDiameter, FormConstants.LifeCircleDiameter);
             }
         }
         if (engine.GameOver)
         {
-            g.DrawString("You've lost!", gameStatusFont, Brushes.Red, heartsX, ConstantsForm.DistanceToGameSituation);
+            g.DrawString("You've lost!", gameStatusFont, Brushes.Red, heartsX, FormConstants.DistanceToGameSituation);
         }
         if (engine.GameWon)
         {
-            g.DrawString("You've won!", gameStatusFont, Brushes.Gold, heartsX, ConstantsForm.DistanceToGameSituation);
+            g.DrawString("You've won!", gameStatusFont, Brushes.Gold, heartsX, FormConstants.DistanceToGameSituation);
         }
         if (engine.GameOver || engine.GameWon)
         {
@@ -117,7 +117,7 @@ public partial class ArkanoidForm : Form
             g.FillEllipse(Brushes.Magenta, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
             g.DrawEllipse(Pens.White, engine.BonusX, engine.BonusY, engine.BonusSize, engine.BonusSize);
         }
-        var scoreY = engine.GameHeight - ConstantsForm.ScoreDisplayOffsetY;
+        var scoreY = engine.GameHeight - FormConstants.ScoreDisplayOffsetY;
         g.DrawString(scoreText, gameStatusFont, scoreBrush, heartsX, scoreY);
     }
 
@@ -134,7 +134,7 @@ public partial class ArkanoidForm : Form
 
     private void ResetGame()
     {
-        engine.Lives = ConstantsForm.NumberOfLives;
+        engine.Lives = FormConstants.NumberOfLives;
         engine.GameOver = false;
         engine.GameWon = false;
         engine.Score = 0;
@@ -142,7 +142,7 @@ public partial class ArkanoidForm : Form
         engine.ResetBall();
         ButtonStartAgain.Visible = false;
         engine.IsBonusActive = false;
-        engine.PaddleWidth = ConstantsForm.StandardPlatformWidth;
+        engine.PaddleWidth = FormConstants.StandardPlatformWidth;
     }
 
     private void ButtonStartAgain_Click(object sender, EventArgs e) => ResetGame();

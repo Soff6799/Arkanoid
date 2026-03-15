@@ -2,7 +2,7 @@ namespace ArcadeGame;
 /// <summary>
 /// Класс содержащий константы
 /// </summary>
-public static class ConstantsForm
+public static class FormConstants
 {
     /// <summary>
     /// Ширина экрана по умолчанию.

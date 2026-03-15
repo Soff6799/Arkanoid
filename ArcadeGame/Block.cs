@@ -1,10 +1,8 @@
-
 namespace ArcadeGame;
-using System;
+
 /// <summary>
 /// Представляет один игровой блок (кирпичик), который может быть уничтожен мячом.
 /// </summary>
-
 public class Block
 {
     /// <summary>

@@ -1,6 +1,6 @@
 namespace ArcadeGame;
 
-public static class ConstantsGameEngine
+public static class GameEngineConstants
 {
     //GameEngine
     /// <summary>

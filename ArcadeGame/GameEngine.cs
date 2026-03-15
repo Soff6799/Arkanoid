@@ -130,14 +130,14 @@ public class GameEngine
         GameHeight = height;
         Blocks = new List<Block>();
         MaxScore = 0;
-        for (var i = 0; i < ConstantsGameEngine.RowsOfArrayBlock; i++)
+        for (var i = 0; i < GameEngineConstants.RowsOfArrayBlock; i++)
         {
-            for (var j = 0; j < ConstantsGameEngine.ColsOfArrayBlock; j++)
+            for (var j = 0; j < GameEngineConstants.ColsOfArrayBlock; j++)
             {
-                int blockPositionX = ConstantsGameEngine.PaddleHorizontalMargin + ConstantsGameEngine.GridOffsetX
-                    + j * (ConstantsGameEngine.BWidth + ConstantsGameEngine.BlockSpacing);
-                int blockPositionY = ConstantsGameEngine.PaddleHorizontalMargin + ConstantsGameEngine.GridOffsetY
-                    + i * (ConstantsGameEngine.BHeight + ConstantsGameEngine.BlockSpacing);
+                int blockPositionX = GameEngineConstants.PaddleHorizontalMargin + GameEngineConstants.GridOffsetX
+                    + j * (GameEngineConstants.BWidth + GameEngineConstants.BlockSpacing);
+                int blockPositionY = GameEngineConstants.PaddleHorizontalMargin + GameEngineConstants.GridOffsetY
+                    + i * (GameEngineConstants.BHeight + GameEngineConstants.BlockSpacing);
                 int healthResult = healthNow - i;
                 Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
             }
@@ -146,10 +146,10 @@ public class GameEngine
             {
                 currentBlockHealthForScore = 1;
             }
-            MaxScore += ConstantsGameEngine.ColsOfArrayBlock * currentBlockHealthForScore *
-                        ConstantsGameEngine.PointsPerHealthUnit;
+            MaxScore += GameEngineConstants.ColsOfArrayBlock * currentBlockHealthForScore *
+                        GameEngineConstants.PointsPerHealthUnit;
         }
-        PaddleY = height - ConstantsGameEngine.PaddleBottomOffset;
+        PaddleY = height - GameEngineConstants.PaddleBottomOffset;
         PaddleX = (width / 2f) - (PaddleWidth / 2f);
     }
 
@@ -160,14 +160,14 @@ public class GameEngine
     public void CreateBlocks()
     {
         Blocks.Clear();
-        for (var i = 0; i < ConstantsGameEngine.RowsOfArrayBlock; i++)
+        for (var i = 0; i < GameEngineConstants.RowsOfArrayBlock; i++)
         {
-            for (var j = 0; j < ConstantsGameEngine.ColsOfArrayBlock; j++)
+            for (var j = 0; j < GameEngineConstants.ColsOfArrayBlock; j++)
             {
-                int blockPositionX = ConstantsGameEngine.PaddleHorizontalMargin + ConstantsGameEngine.GridOffsetX
-                    + j * (ConstantsGameEngine.BWidth + ConstantsGameEngine.BlockSpacing);
-                int blockPositionY = ConstantsGameEngine.PaddleHorizontalMargin + ConstantsGameEngine.GridOffsetY
-                    + i * (ConstantsGameEngine.BHeight + ConstantsGameEngine.BlockSpacing);
+                int blockPositionX = GameEngineConstants.PaddleHorizontalMargin + GameEngineConstants.GridOffsetX
+                    + j * (GameEngineConstants.BWidth + GameEngineConstants.BlockSpacing);
+                int blockPositionY = GameEngineConstants.PaddleHorizontalMargin + GameEngineConstants.GridOffsetY
+                    + i * (GameEngineConstants.BHeight + GameEngineConstants.BlockSpacing);
                 int healthResult = healthNow - i;
                 Blocks.Add(new Block(blockPositionX, blockPositionY, healthResult));
             }
@@ -192,13 +192,13 @@ public class GameEngine
     public void MovePaddle(int mouseX)
     {
         var newX = mouseX - (PaddleWidth / 2f);
-        if (newX < ConstantsGameEngine.PaddleHorizontalMargin)
+        if (newX < GameEngineConstants.PaddleHorizontalMargin)
         {
-            newX = ConstantsGameEngine.PaddleHorizontalMargin;
+            newX = GameEngineConstants.PaddleHorizontalMargin;
         }
-        if (newX + PaddleWidth > GameWidth + ConstantsGameEngine.PaddleHorizontalMargin)
+        if (newX + PaddleWidth > GameWidth + GameEngineConstants.PaddleHorizontalMargin)
         {
-            newX = GameWidth + ConstantsGameEngine.PaddleHorizontalMargin - PaddleWidth;
+            newX = GameWidth + GameEngineConstants.PaddleHorizontalMargin - PaddleWidth;
         }
         PaddleX = newX;
         if (!IsStarted)
@@ -216,8 +216,8 @@ public class GameEngine
         if (!IsStarted)
         {
             IsStarted = true;
-            BallVx = ConstantsGameEngine.InitialBallSpeedX;
-            BallVy = ConstantsGameEngine.InitialBallSpeedY;
+            BallVx = GameEngineConstants.InitialBallSpeedX;
+            BallVy = GameEngineConstants.InitialBallSpeedY;
         }
     }
 
@@ -235,19 +235,19 @@ public class GameEngine
             BallX += BallVx;
             BallY += BallVy;
         }
-        if (BallX <= ConstantsGameEngine.PaddleHorizontalMargin)
+        if (BallX <= GameEngineConstants.PaddleHorizontalMargin)
         {
-            BallX = ConstantsGameEngine.PaddleHorizontalMargin;
+            BallX = GameEngineConstants.PaddleHorizontalMargin;
             BallVx = Math.Abs(BallVx);
         }
-        else if (BallX + BallSize >= GameWidth + ConstantsGameEngine.PaddleHorizontalMargin)
+        else if (BallX + BallSize >= GameWidth + GameEngineConstants.PaddleHorizontalMargin)
         {
-            BallX = GameWidth + ConstantsGameEngine.PaddleHorizontalMargin - BallSize;
+            BallX = GameWidth + GameEngineConstants.PaddleHorizontalMargin - BallSize;
             BallVx = -Math.Abs(BallVx);
         }
-        if (BallY <= ConstantsGameEngine.TopWallOffset)
+        if (BallY <= GameEngineConstants.TopWallOffset)
         {
-            BallY = ConstantsGameEngine.TopWallOffset;
+            BallY = GameEngineConstants.TopWallOffset;
             BallVy = Math.Abs(BallVy);
         }
         if (BallVy > 0 && BallY + BallSize >= PaddleY && BallY + BallSize <= PaddleY + PaddleHeight
@@ -256,7 +256,7 @@ public class GameEngine
             BallVy = -Math.Abs(BallVy);
             var paddleCenter = PaddleX + (PaddleWidth / 2f);
             var ballCenter = BallX + (BallSize / 2f);
-            BallVx = (ballCenter - paddleCenter) * ConstantsGameEngine.PaddleBounceInfluence;
+            BallVx = (ballCenter - paddleCenter) * GameEngineConstants.PaddleBounceInfluence;
         }
         for (var i = Blocks.Count - 1; i >= 0; i--)
         {
@@ -265,12 +265,12 @@ public class GameEngine
                     BallY + BallSize >= b.Y && BallY <= b.Y + b.Height)) continue;
             BallVy = -BallVy;
             b.Health--;
-            Score += ConstantsGameEngine.PointsPerHealthUnit;
+            Score += GameEngineConstants.PointsPerHealthUnit;
             if (b.Health <= 0) Blocks.RemoveAt(i);
             if (Blocks.Count == 0) GameWon = true;
             break;
         }
-        if (BallY + BallSize >= GameHeight + ConstantsGameEngine.DeadZoneOffset)
+        if (BallY + BallSize >= GameHeight + GameEngineConstants.DeadZoneOffset)
         {
             Lives--;
             if (Lives <= 0)
@@ -283,7 +283,7 @@ public class GameEngine
         if (IsStarted)
         {
             bonusSpawnTimer++;
-            if (bonusSpawnTimer >= ConstantsGameEngine.BonusSpawnInterval)
+            if (bonusSpawnTimer >= GameEngineConstants.BonusSpawnInterval)
             {
                 SpawnBonus();
                 bonusSpawnTimer = 0;
@@ -291,7 +291,7 @@ public class GameEngine
         }
         if (IsBonusActive && IsStarted)
         {
-            BonusY += ConstantsGameEngine.BonusFallSpeed;
+            BonusY += GameEngineConstants.BonusFallSpeed;
             if (BonusY + BonusSize >= PaddleY &&
                 BonusY <= PaddleY + PaddleHeight &&
                 BonusX + BonusSize >= PaddleX &&
@@ -300,7 +300,7 @@ public class GameEngine
                 ActivateBonusEffect();
                 IsBonusActive = false;
             }
-            if (BonusY > GameHeight + ConstantsGameEngine.DeadZoneOffset)
+            if (BonusY > GameHeight + GameEngineConstants.DeadZoneOffset)
             {
                 IsBonusActive = false;
             }
@@ -310,7 +310,7 @@ public class GameEngine
             bonusEffectTimer--;
             if (bonusEffectTimer <= 0)
             {
-                PaddleWidth = ConstantsGameEngine.DefaultPaddleWidth;
+                PaddleWidth = GameEngineConstants.DefaultPaddleWidth;
             }
         }
     }
@@ -320,8 +320,8 @@ public class GameEngine
     /// </summary>
     private void SpawnBonus()
     {
-        BonusX = random.Next(ConstantsGameEngine.BonusSpawnMinX, GameWidth);
-        BonusY = ConstantsGameEngine.BonusSpawnY;
+        BonusX = random.Next(GameEngineConstants.BonusSpawnMinX, GameWidth);
+        BonusY = GameEngineConstants.BonusSpawnY;
         IsBonusActive = true;
     }
 
@@ -330,7 +330,7 @@ public class GameEngine
     /// </summary>
     private void ActivateBonusEffect()
     {
-        PaddleWidth = ConstantsGameEngine.DefaultPaddleWidth * 2;
-        bonusEffectTimer = ConstantsGameEngine.BonusEffectDuration;
+        PaddleWidth = GameEngineConstants.DefaultPaddleWidth * 2;
+        bonusEffectTimer = GameEngineConstants.BonusEffectDuration;
     }
 }
