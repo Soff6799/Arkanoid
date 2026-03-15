@@ -6,7 +6,7 @@ using System.Windows.Forms;
 /// <summary>
 /// Основная форма приложения игры. Управляет отрисовкой, игровым циклом и обработкой ввода пользователя.
 /// </summary>
-public partial class ArkanoidForm : Form
+public sealed partial class ArkanoidForm : Form
 {
     private GameEngine engine;
     private Timer timer;
@@ -46,7 +46,7 @@ public partial class ArkanoidForm : Form
         ButtonStartAgain.Visible = false;
     }
 
-    private void TimerTick(object sender, EventArgs e)
+    private void TimerTick(object? sender, EventArgs e)
     {
         engine.Update();
         scoreText = $"{engine.Score} / {engine.MaxScore}";
@@ -117,13 +117,13 @@ public partial class ArkanoidForm : Form
     private void Form_Load(object sender, EventArgs e)
     {
         var paddleCenterClient = new Point(
-            (int)(engine.PaddleX + engine.PaddleWidth / 2),
-            (int)(engine.PaddleY + engine.PaddleHeight / 2));
+            (int)(engine.PaddleX + engine.PaddleWidth / 2f),
+            (int)(engine.PaddleY + engine.PaddleHeight / 2f));
         var paddleCenterScreen = PointToScreen(paddleCenterClient);
         Cursor.Position = paddleCenterScreen;
     }
 
-    private void Form_MouseClick(object sender, MouseEventArgs e) => engine.StartBall();
+    private void Form_MouseClick(object? sender, MouseEventArgs e) => engine.StartBall();
 
     private void ResetGame()
     {
