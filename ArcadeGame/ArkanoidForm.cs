@@ -11,6 +11,7 @@ public partial class ArkanoidForm : Form
     private GameEngine engine;
     private Timer timer;
     private BufferedGraphics gameBuffer;
+    private Graphics formGraphics;
     private Pen fieldBorderPen;
     private SolidBrush scoreBrush;
     private Pen lifeIndicatorPen;
@@ -25,6 +26,8 @@ public partial class ArkanoidForm : Form
     public ArkanoidForm()
     {
         InitializeComponent();
+        formGraphics = CreateGraphics();
+        gameBuffer = BufferedGraphicsManager.Current.Allocate(formGraphics, ClientRectangle);
         scoreText = "0 / 0";
         fieldBorderPen = new Pen(Color.LemonChiffon, FormConstants.BordersWidth);
         scoreBrush = new SolidBrush(Color.White);
@@ -47,20 +50,10 @@ public partial class ArkanoidForm : Form
     {
         engine.Update();
         scoreText = $"{engine.Score} / {engine.MaxScore}";
-        if (gameBuffer == null)
-        {
-            using (var tempG = CreateGraphics())
-            {
-                gameBuffer = BufferedGraphicsManager.Current.Allocate(tempG, ClientRectangle);
-            }
-        }
         var g = gameBuffer.Graphics;
         g.Clear(BackColor);
         RenderScene(g);
-        using (var screenGraphics = CreateGraphics())
-        {
-            gameBuffer.Render(screenGraphics);
-        }
+        gameBuffer.Render();
     }
 
     private void RenderScene(Graphics g)
