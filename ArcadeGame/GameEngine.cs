@@ -1,6 +1,7 @@
 namespace ArcadeGame;
 
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 
 public class GameEngine
@@ -250,8 +251,9 @@ public class GameEngine
             BallY = GameEngineConstants.TopWallOffset;
             BallVy = Math.Abs(BallVy);
         }
-        if (BallVy > 0 && BallY + BallSize >= PaddleY && BallY + BallSize <= PaddleY + PaddleHeight
-            && BallX + BallSize >= PaddleX && BallX <= PaddleX + PaddleWidth)
+        var ballRect = new RectangleF(BallX, BallY, BallSize, BallSize);
+        var paddleRect = new RectangleF(PaddleX, PaddleY, PaddleWidth, PaddleHeight);
+        if (BallVy > 0 && ballRect.IntersectsWith(paddleRect))
         {
             BallVy = -Math.Abs(BallVy);
             var paddleCenter = PaddleX + (PaddleWidth / 2f);
@@ -292,10 +294,9 @@ public class GameEngine
         if (IsBonusActive && IsStarted)
         {
             BonusY += GameEngineConstants.BonusFallSpeed;
-            if (BonusY + BonusSize >= PaddleY &&
-                BonusY <= PaddleY + PaddleHeight &&
-                BonusX + BonusSize >= PaddleX &&
-                BonusX <= PaddleX + PaddleWidth)
+            var bonusRect = new RectangleF(BonusX, BonusY, BonusSize, BonusSize);
+            var paddleRectForBonus = new RectangleF(PaddleX, PaddleY, PaddleWidth, PaddleHeight);
+            if (bonusRect.IntersectsWith(paddleRectForBonus))
             {
                 ActivateBonusEffect();
                 IsBonusActive = false;
