@@ -1,4 +1,4 @@
-namespace ArcadeGame;
+namespace ArcadeGame.Logic.Logic; 
 
 public static class GameEngineConstants
 {

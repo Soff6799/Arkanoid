@@ -1,5 +1,8 @@
+using ArcadeGame.Logic.Logic;
+
 namespace ArcadeGame;
 
+using ArcadeGame.Logic;
 using System.Drawing;
 using System.Windows.Forms;
 

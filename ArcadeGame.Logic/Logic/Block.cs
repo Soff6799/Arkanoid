@@ -1,4 +1,4 @@
-namespace ArcadeGame;
+namespace ArcadeGame.Logic.Logic; 
 
 /// <summary>
 /// Представляет один игровой блок (кирпичик), который может быть уничтожен мячом.

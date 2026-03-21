@@ -50,7 +50,7 @@ partial class ArkanoidForm
         BackColor = System.Drawing.SystemColors.ButtonFace;
         ClientSize = new System.Drawing.Size(1049, 859);
         Controls.Add(ButtonStartAgain);
-        Text = "ArcadeGame";
+        Text = "ArcadeGame.Winforms";
         Load += Form_Load;
         MouseClick += Form_MouseClick;
         ResumeLayout(false);
