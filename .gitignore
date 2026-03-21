@@ -1,0 +1,21 @@
+# Build
+bin/
+obj/
+
+# Rider / IDEA
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# Visual Studio / user files
+.vs/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NuGet / temporary
+*.nupkg
+*.log
